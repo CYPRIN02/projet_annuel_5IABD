@@ -1,22 +1,13 @@
+fail_fast: false
 repos:
-  - repo: local
+  - repo: https://github.com/pocc/pre-commit-hooks
+    rev: master
     hooks:
-      - id: dotnet-tool-restore
-        name: Install .NET tools
-        entry: dotnet tool restore
-        language: system
-        always_run: true
-        pass_filenames: false
-        stages:
-          - commit
-          - push
-          - post-checkout
-          - post-rewrite
-        description: Install the .NET tools listed at .config/dotnet-tools.json.
-      - id: csharpier
-        name: Run CSharpier on C# files
-        entry: dotnet tool run dotnet-csharpier
-        language: system
-        types:
-          - c#
-        description: CSharpier is an opinionated C# formatter inspired by Prettier.
+      - id: clang-format
+        args: [--style=Google]
+      - id: clang-tidy
+      - id: oclint
+      - id: uncrustify
+      - id: cppcheck
+      - id: cpplint
+      - id: include-what-you-use
