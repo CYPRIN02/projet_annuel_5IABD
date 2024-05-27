@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.34707.107
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OutlookWebAddIn1SpamGuard", "OutlookWebAddIn1SpamGuard\OutlookWebAddIn1SpamGuard.csproj", "{DB5FA019-13B2-459D-B017-827F7384B555}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OutlookWebAddIn1SpamGuardWeb", "OutlookWebAddIn1SpamGuardWeb\OutlookWebAddIn1SpamGuardWeb.csproj", "{A1618313-76FF-4020-8AEA-57EC33F6E149}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DB5FA019-13B2-459D-B017-827F7384B555}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB5FA019-13B2-459D-B017-827F7384B555}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB5FA019-13B2-459D-B017-827F7384B555}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{DB5FA019-13B2-459D-B017-827F7384B555}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB5FA019-13B2-459D-B017-827F7384B555}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB5FA019-13B2-459D-B017-827F7384B555}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{A1618313-76FF-4020-8AEA-57EC33F6E149}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1618313-76FF-4020-8AEA-57EC33F6E149}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1618313-76FF-4020-8AEA-57EC33F6E149}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1618313-76FF-4020-8AEA-57EC33F6E149}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7582AEE9-EF4A-478E-B7AE-DE57C7321A99}
+	EndGlobalSection
+EndGlobal

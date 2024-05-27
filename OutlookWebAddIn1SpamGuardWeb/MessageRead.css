@@ -1,0 +1,21 @@
+﻿/*Styles propres aux pages */
+
+/*.padding {
+    padding: 15px;
+}*/
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+td.prop-val {
+    word-break: break-all;
+}
+
+.content-main {
+    margin: 10px;
+}

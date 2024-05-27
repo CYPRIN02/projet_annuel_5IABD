@@ -1,0 +1,62 @@
+# Fichiers de configuration de Visual Studio
+.vscode/
+.vs/
+*.code-workspace
+
+# Fichiers de build
+[Bb]in/
+[Oo]bj/
+
+# Fichiers de packages
+*.nupkg
+*.snupkg
+
+# Fichiers de journalisation
+*.log
+
+# Fichiers générés par le compilateur
+*.dll
+*.exe
+*.pdb
+*.cache
+*.ilk
+*.lib
+*.ndb
+*.obj
+*.suo
+*.tlb
+*.tlog
+*.vspscc
+*.vssscc
+
+# Fichiers de publication et de déploiement
+.publish/
+
+# Fichiers de test
+TestResults/
+*.trx
+*.user
+
+# Fichiers de configuration local
+appsettings*.json
+app.config
+web.config
+
+# Fichiers de l'outil de gestion de version
+.history/
+*.DS_Store
+*.lock
+
+# Fichiers spécifiques aux projets d'add-ins et autres applications
+AddIns/
+SpamAddIn/
+SpamApplication/
+
+# Fichiers de configuration de l'IDE
+*.sln.docstates
+*.userprefs
+*.userosdefaults
+
+# Fichiers temporaires
+*.tmp
+*.temp
