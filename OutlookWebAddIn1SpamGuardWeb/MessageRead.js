@@ -16,7 +16,24 @@
         $('#item-subject').text(item.subject);
         $('#item-internetMessageId').text(item.internetMessageId);
         $('#item-from').html(item.from.displayName + " &lt;" + item.from.emailAddress + "&gt;");
+        $('#checkboxLabel').text("J'accepte la condition de confidentialité");
+        $('#submit-btn').text("Soumettre");
     }
+
+    // Dynamically setting the label text
+    document.getElementById('checkboxLabel').innerText = "I agree to the terms of privacy.";
+
+    function submitForm() {
+        var checkbox = document.getElementById('agreeCheckbox');
+        if (checkbox.checked) {
+            console.log("Checkbox is checked - form can be submitted.");
+            // Proceed with form submission or other actions
+        } else {
+            console.log("Checkbox is not checked - cannot submit the form.");
+            alert("You must agree to the terms of privacy before proceeding.");
+        }
+}
+
 })();
 
 
