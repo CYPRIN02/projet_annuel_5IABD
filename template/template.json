@@ -129,6 +129,10 @@
         "redisCacheServiceConnectorName": {
             "type": "string",
             "defaultValue": "[format('connector_redis_{0}', uniqueString(deployment().name))]"
+        },
+        "linkRedisPrivateDnsZone": {
+            "type": "bool",
+            "defaultValue": true
         }
     },
     "variables": {
@@ -225,14 +229,21 @@
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2020-07-01",
             "location": "eastus",
-            "name": "spamguard-reseau-virtuel",
+            "name": "[parameters('vnetName')]",
             "properties": {
                 "addressSpace": {
                     "addressPrefixes": [
                         "10.0.0.0/16"
                     ]
                 },
-                "subnets": []
+                "subnets": [
+                    {
+                        "name": "new-subnet",
+                        "properties": {
+                            "addressPrefix": "10.0.1.0/24"
+                        }
+                    }
+                ]
             }
         },
         {
@@ -410,14 +421,15 @@
                             "id": "[resourceId(parameters('subscriptionId'), parameters('resourceGroupName'), 'Microsoft.Network/virtualNetworks', parameters('vnetName'))]"
                         },
                         "registrationEnabled": false
-                    }
+                    },
+                    "condition": "[parameters('linkRedisPrivateDnsZone')]"
                 }
             ]
         },
         {
             "dependsOn": [
                 "[resourceId('Microsoft.Cache/Redis/', parameters('cacheName'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('outboundSubnetName'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), 'new-subnet')]"
             ],
             "name": "[parameters('redisPrivateEndpointName')]",
             "type": "Microsoft.Network/privateEndpoints",
@@ -425,7 +437,7 @@
             "location": "[parameters('location')]",
             "properties": {
                 "subnet": {
-                    "id": "[concat('subscriptions/', parameters('subscriptionId'), '/resourceGroups/', parameters('resourceGroupName'), '/providers/Microsoft.Network/virtualNetworks/' ,parameters('vnetName'), '/subnets/' , parameters('outboundSubnetName'))]"
+                    "id": "[concat('subscriptions/', parameters('subscriptionId'), '/resourceGroups/', parameters('resourceGroupName'), '/providers/Microsoft.Network/virtualNetworks/' ,parameters('vnetName'), '/subnets/new-subnet')]"
                 },
                 "privateLinkServiceConnections": [
                     {

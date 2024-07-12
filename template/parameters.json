@@ -60,7 +60,7 @@
             "value": "vskzwaimca"
         },
         "postgreSqlServerAdminPwd": {
-            "value": null
+            "value": "1PrMUdn9xKzjtLNM4WWQ103xEG5k2AAMIJlAUN2jJ5iAEfKS5O8kbV79EKfNXt5PSKEG8aHA/9xJ+ASt9isgDQ=="
         },
         "postgreSqlServerTags": {
             "value": {}
@@ -100,6 +100,9 @@
         },
         "redisPrivateEndpointName": {
             "value": "spamguard-api-web-app-cache-privateEndpoint"
+        },
+        "linkRedisPrivateDnsZone": {
+            "value": false
         }
     }
 }
