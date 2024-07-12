@@ -1,0 +1,490 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "subscriptionId": {
+            "type": "string"
+        },
+        "resourceGroupName": {
+            "type": "string"
+        },
+        "name": {
+            "type": "string"
+        },
+        "location": {
+            "type": "string"
+        },
+        "hostingPlanName": {
+            "type": "string"
+        },
+        "serverFarmResourceGroup": {
+            "type": "string"
+        },
+        "alwaysOn": {
+            "type": "bool"
+        },
+        "ftpsState": {
+            "type": "string"
+        },
+        "sku": {
+            "type": "string"
+        },
+        "skuCode": {
+            "type": "string"
+        },
+        "workerSize": {
+            "type": "string"
+        },
+        "workerSizeId": {
+            "type": "string"
+        },
+        "numberOfWorkers": {
+            "type": "string"
+        },
+        "linuxFxVersion": {
+            "type": "string"
+        },
+        "privateDnsZoneName": {
+            "type": "string",
+            "defaultValue": "[format('dnszone-{0}', uniqueString(deployment().name))]"
+        },
+        "postgreSqlServerName": {
+            "type": "string",
+            "defaultValue": "[format('server-{0}', uniqueString(deployment().name))]"
+        },
+        "postgreSqlServerAdminUsername": {
+            "type": "string"
+        },
+        "postgreSqlServerAdminPwd": {
+            "type": "securestring"
+        },
+        "postgresqlDatabaseSku": {
+            "type": "string"
+        },
+        "postgresqlDatabaseTier": {
+            "type": "string"
+        },
+        "postgreSqlServerTags": {
+            "type": "object",
+            "defaultValue": {}
+        },
+        "postgreSqlDatabaseName": {
+            "type": "string",
+            "defaultValue": "[format('db-{0}', uniqueString(deployment().name))]"
+        },
+        "postgreSqlDatabaseTags": {
+            "type": "object",
+            "defaultValue": {}
+        },
+        "outboundSubnetName": {
+            "type": "string",
+            "defaultValue": "[format('subnet-{0}', uniqueString(deployment().name))]"
+        },
+        "outboundSubnetAddressPrefix": {
+            "type": "string"
+        },
+        "siteConfigName": {
+            "type": "string",
+            "defaultValue": "[format('sc{0}', uniqueString(resourceGroup().id))]"
+        },
+        "vnetName": {
+            "type": "string"
+        },
+        "cacheName": {
+            "type": "string",
+            "defaultValue": "[format('{0}-cache', uniqueString(deployment().name))]"
+        },
+        "cacheTags": {
+            "type": "object",
+            "defaultValue": {}
+        },
+        "cacheSkuName": {
+            "type": "string",
+            "defaultValue": "Standard"
+        },
+        "cacheSkuFamily": {
+            "type": "string",
+            "defaultValue": "C"
+        },
+        "cacheSkuCapacity": {
+            "type": "string",
+            "defaultValue": "1"
+        },
+        "redisPrivateDnsZoneName": {
+            "type": "string",
+            "defaultValue": "[format('dnszone-{0}', uniqueString(deployment().name))]"
+        },
+        "redisVirtualLinkName": {
+            "type": "string",
+            "defaultValue": "[format('link-{0}', uniqueString(deployment().name))]"
+        },
+        "redisPrivateEndpointName": {
+            "type": "string",
+            "defaultValue": "[format('endpoint-{0}', uniqueString(deployment().name))]"
+        },
+        "redisDnsZoneGroupName": {
+            "type": "string",
+            "defaultValue": "default"
+        },
+        "redisCacheServiceConnectorName": {
+            "type": "string",
+            "defaultValue": "[format('connector_redis_{0}', uniqueString(deployment().name))]"
+        }
+    },
+    "variables": {
+        "inboundSubnetDeployment": "inboundSubnetDeployment",
+        "outboundSubnetDeployment": "outboundSubnetDeployment",
+        "databaseDeployment": "databaseDeployment",
+        "serviceConnectorDeployment": "serviceConnectorDeployment"
+    },
+    "resources": [
+        {
+            "apiVersion": "2022-03-01",
+            "name": "[parameters('name')]",
+            "type": "Microsoft.Web/sites",
+            "location": "[parameters('location')]",
+            "tags": {},
+            "dependsOn": [
+                "microsoft.insights/components/spamguard-api-web-app",
+                "[concat('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
+            ],
+            "properties": {
+                "name": "[parameters('name')]",
+                "siteConfig": {
+                    "appSettings": [
+                        {
+                            "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+                            "value": "[reference('microsoft.insights/components/spamguard-api-web-app', '2015-05-01').ConnectionString]"
+                        },
+                        {
+                            "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
+                            "value": "~3"
+                        },
+                        {
+                            "name": "XDT_MicrosoftApplicationInsights_Mode",
+                            "value": "default"
+                        }
+                    ],
+                    "linuxFxVersion": "[parameters('linuxFxVersion')]",
+                    "alwaysOn": "[parameters('alwaysOn')]",
+                    "ftpsState": "[parameters('ftpsState')]"
+                },
+                "serverFarmId": "[concat('/subscriptions/', parameters('subscriptionId'),'/resourcegroups/', parameters('serverFarmResourceGroup'), '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
+                "clientAffinityEnabled": false,
+                "virtualNetworkSubnetId": null,
+                "httpsOnly": true,
+                "publicNetworkAccess": "Enabled"
+            },
+            "resources": [
+                {
+                    "type": "Microsoft.Web/sites/basicPublishingCredentialsPolicies",
+                    "apiVersion": "2022-09-01",
+                    "name": "[concat(parameters('name'), '/scm')]",
+                    "properties": {
+                        "allow": false
+                    },
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/Sites', parameters('name'))]"
+                    ]
+                },
+                {
+                    "type": "Microsoft.Web/sites/basicPublishingCredentialsPolicies",
+                    "apiVersion": "2022-09-01",
+                    "name": "[concat(parameters('name'), '/ftp')]",
+                    "properties": {
+                        "allow": false
+                    },
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/Sites', parameters('name'))]"
+                    ]
+                }
+            ]
+        },
+        {
+            "apiVersion": "2018-11-01",
+            "name": "[parameters('hostingPlanName')]",
+            "type": "Microsoft.Web/serverfarms",
+            "location": "[parameters('location')]",
+            "kind": "linux",
+            "tags": {},
+            "dependsOn": [],
+            "properties": {
+                "name": "[parameters('hostingPlanName')]",
+                "workerSize": "[parameters('workerSize')]",
+                "workerSizeId": "[parameters('workerSizeId')]",
+                "numberOfWorkers": "[parameters('numberOfWorkers')]",
+                "reserved": true,
+                "zoneRedundant": false
+            },
+            "sku": {
+                "Tier": "[parameters('sku')]",
+                "Name": "[parameters('skuCode')]"
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2020-07-01",
+            "location": "eastus",
+            "name": "spamguard-reseau-virtuel",
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "10.0.0.0/16"
+                    ]
+                },
+                "subnets": []
+            }
+        },
+        {
+            "apiVersion": "2020-02-02-preview",
+            "name": "spamguard-api-web-app",
+            "type": "microsoft.insights/components",
+            "location": "eastus",
+            "tags": {},
+            "dependsOn": [
+                "newWorkspaceTemplate"
+            ],
+            "properties": {
+                "ApplicationId": "[parameters('name')]",
+                "Request_Source": "IbizaWebAppExtensionCreate",
+                "Flow_Type": "Redfield",
+                "Application_Type": "web",
+                "WorkspaceResourceId": "/subscriptions/00d805b6-f112-49bb-b5dd-aff34c457536/resourceGroups/DefaultResourceGroup-EUS/providers/Microsoft.OperationalInsights/workspaces/DefaultWorkspace-00d805b6-f112-49bb-b5dd-aff34c457536-EUS"
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2021-04-01",
+            "name": "newWorkspaceTemplate",
+            "resourceGroup": "DefaultResourceGroup-EUS",
+            "subscriptionId": "[parameters('subscriptionId')]",
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {},
+                    "variables": {},
+                    "resources": [
+                        {
+                            "apiVersion": "2020-08-01",
+                            "name": "DefaultWorkspace-00d805b6-f112-49bb-b5dd-aff34c457536-EUS",
+                            "type": "Microsoft.OperationalInsights/workspaces",
+                            "location": "eastus",
+                            "properties": {}
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "dependsOn": [],
+            "name": "[parameters('privateDnsZoneName')]",
+            "type": "Microsoft.Network/privateDnsZones",
+            "apiVersion": "2018-09-01",
+            "location": "global",
+            "properties": {}
+        },
+        {
+            "name": "[parameters('postgreSqlServerName')]",
+            "type": "Microsoft.DBforPostgreSQL/flexibleServers",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets' ,parameters('vnetName'), parameters('outboundSubnetName'))]",
+                "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZoneName'))]"
+            ],
+            "location": "[parameters('location')]",
+            "apiVersion": "2020-11-05-preview",
+            "tags": "[parameters('postgreSqlServerTags')]",
+            "properties": {
+                "administratorLogin": "[parameters('postgreSqlServerAdminUsername')]",
+                "administratorLoginPassword": "[parameters('postgreSqlServerAdminPwd')]",
+                "version": "12",
+                "publicNetworkAccess": "Disabled",
+                "haEnabled": "Disabled",
+                "storageProfile": {
+                    "storageMB": 131072,
+                    "backupRetentionDays": 7,
+                    "geoRedundantBackup": "Disabled"
+                },
+                "availabilityZone": "",
+                "DelegatedSubnetArguments": {
+                    "SubnetArmResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('outboundSubnetName'))]"
+                },
+                "PrivateDnsZoneArguments": {
+                    "PrivateDnsZoneArmResourceId": "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZoneName'))]"
+                }
+            },
+            "sku": {
+                "name": "[parameters('postgresqlDatabaseSku')]",
+                "tier": "[parameters('postgresqlDatabaseTier')]"
+            },
+            "resources": [
+                {
+                    "dependsOn": [
+                        "[concat('Microsoft.DBforPostgreSQL/flexibleServers/', parameters('postgreSqlServerName'))]"
+                    ],
+                    "name": "[parameters('postgreSqlDatabaseName')]",
+                    "tags": "[parameters('postgreSqlDatabaseTags')]",
+                    "type": "databases",
+                    "apiVersion": "2020-11-05-preview",
+                    "properties": {
+                        "charset": "utf8",
+                        "collation": "en_US.utf8"
+                    }
+                }
+            ]
+        },
+        {
+            "dependsOn": [
+                "[concat('Microsoft.Network/virtualNetworks', '/', parameters('vnetName'))]"
+            ],
+            "name": "[concat(parameters('vnetName'), '/', parameters('outboundSubnetName'))]",
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2020-07-01",
+            "location": "[parameters('location')]",
+            "properties": {
+                "delegations": [
+                    {
+                        "name": "dlg-database",
+                        "properties": {
+                            "serviceName": "Microsoft.DBforPostgreSQL/flexibleServers"
+                        }
+                    }
+                ],
+                "serviceEndpoints": [],
+                "addressPrefix": "[parameters('outboundSubnetAddressPrefix')]"
+            }
+        },
+        {
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/flexibleServers/databases', parameters('postgreSqlServerName'), parameters('postgreSqlDatabaseName'))]",
+                "[concat('Microsoft.Web/sites', '/', parameters('name'))]"
+            ],
+            "name": "[concat(parameters('name'), '/', parameters('siteConfigName'))]",
+            "type": "Microsoft.Web/sites/config",
+            "apiVersion": "2018-11-01",
+            "properties": {
+                "AZURE_POSTGRESQL_CONNECTIONSTRING": {
+                    "value": "[concat('Database=', parameters('postgreSqlDatabaseName'), ';Server=', parameters('postgreSqlServerName'), '.postgres.database.azure.com' , ';User Id=',parameters('postgreSqlServerAdminUsername'), ';Password=', parameters('postgreSqlServerAdminPwd'))]",
+                    "type": "PostgreSQL"
+                }
+            }
+        },
+        {
+            "name": "[parameters('cacheName')]",
+            "location": "[parameters('location')]",
+            "tags": "[parameters('cacheTags')]",
+            "type": "Microsoft.Cache/Redis",
+            "apiVersion": "2022-06-01",
+            "properties": {
+                "sku": {
+                    "name": "[parameters('cacheSkuName')]",
+                    "family": "[parameters('cacheSkuFamily')]",
+                    "capacity": "[parameters('cacheSkuCapacity')]"
+                },
+                "redisConfiguration": {},
+                "enableNonSslPort": false,
+                "redisVersion": "6",
+                "publicNetworkAccess": "Disabled"
+            }
+        },
+        {
+            "dependsOn": [],
+            "name": "[parameters('redisPrivateDnsZoneName')]",
+            "type": "Microsoft.Network/privateDnsZones",
+            "apiVersion": "2018-09-01",
+            "location": "global",
+            "properties": {},
+            "resources": [
+                {
+                    "dependsOn": [
+                        "[concat('Microsoft.Network/privateDnsZones', '/', parameters('redisPrivateDnsZoneName'))]",
+                        "[resourceId(parameters('subscriptionId'), parameters('resourceGroupName'), 'Microsoft.Network/virtualNetworks', parameters('vnetName'))]"
+                    ],
+                    "name": "[parameters('redisVirtualLinkName')]",
+                    "type": "virtualNetworkLinks",
+                    "apiVersion": "2018-09-01",
+                    "location": "global",
+                    "properties": {
+                        "virtualNetwork": {
+                            "id": "[resourceId(parameters('subscriptionId'), parameters('resourceGroupName'), 'Microsoft.Network/virtualNetworks', parameters('vnetName'))]"
+                        },
+                        "registrationEnabled": false
+                    }
+                }
+            ]
+        },
+        {
+            "dependsOn": [
+                "[resourceId('Microsoft.Cache/Redis/', parameters('cacheName'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('outboundSubnetName'))]"
+            ],
+            "name": "[parameters('redisPrivateEndpointName')]",
+            "type": "Microsoft.Network/privateEndpoints",
+            "apiVersion": "2021-02-01",
+            "location": "[parameters('location')]",
+            "properties": {
+                "subnet": {
+                    "id": "[concat('subscriptions/', parameters('subscriptionId'), '/resourceGroups/', parameters('resourceGroupName'), '/providers/Microsoft.Network/virtualNetworks/' ,parameters('vnetName'), '/subnets/' , parameters('outboundSubnetName'))]"
+                },
+                "privateLinkServiceConnections": [
+                    {
+                        "name": "[parameters('redisPrivateEndpointName')]",
+                        "properties": {
+                            "privateLinkServiceId": "[resourceId('Microsoft.Cache/Redis/', parameters('cacheName'))]",
+                            "groupIds": [
+                                "redisCache"
+                            ]
+                        }
+                    }
+                ]
+            },
+            "resources": [
+                {
+                    "dependsOn": [
+                        "[concat('Microsoft.Network/privateEndpoints', '/', parameters('redisPrivateEndpointName'))]",
+                        "[concat('subscriptions/', parameters('subscriptionId'), '/resourceGroups/', parameters('resourceGroupName'), '/providers/Microsoft.Network/privateDnsZones/', parameters('redisPrivateDnsZoneName'))]"
+                    ],
+                    "name": "[parameters('redisDnsZoneGroupName')]",
+                    "type": "privateDnsZoneGroups",
+                    "apiVersion": "2021-02-01",
+                    "location": "[parameters('location')]",
+                    "properties": {
+                        "privateDnsZoneConfigs": [
+                            {
+                                "name": "[parameters('redisPrivateDnsZoneName')]",
+                                "properties": {
+                                    "privateDnsZoneId": "[concat('subscriptions/', parameters('subscriptionId'), '/resourceGroups/', parameters('resourceGroupName'), '/providers/Microsoft.Network/privateDnsZones/', parameters('redisPrivateDnsZoneName'))]"
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/privateEndpoints/privateDnsZoneGroups', parameters('redisPrivateEndpointName'), parameters('redisDnsZoneGroupName'))]",
+                "[resourceId(parameters('subscriptionId'), parameters('resourceGroupName'), 'Microsoft.Web/sites', parameters('name'))]",
+                "[resourceId('Microsoft.Cache/Redis', parameters('cacheName'))]"
+            ],
+            "name": "[parameters('redisCacheServiceConnectorName')]",
+            "type": "Microsoft.ServiceLinker/linkers",
+            "apiVersion": "2022-05-01",
+            "scope": "[resourceId(parameters('subscriptionId'), parameters('resourceGroupName'), 'Microsoft.Web/sites', parameters('name'))]",
+            "properties": {
+                "targetService": {
+                    "type": "AzureResource",
+                    "id": "[resourceId('Microsoft.Cache/Redis/Databases', parameters('cacheName'), '0')]"
+                },
+                "authInfo": {
+                    "authType": "secret"
+                },
+                "clientType": "python",
+                "vNetSolution": {
+                    "type": "privateLink"
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,105 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "subscriptionId": {
+            "value": "00d805b6-f112-49bb-b5dd-aff34c457536"
+        },
+        "resourceGroupName": {
+            "value": "groupe_de_ressoureces_spamguard"
+        },
+        "name": {
+            "value": "spamguard-api-web-app"
+        },
+        "location": {
+            "value": "East US"
+        },
+        "hostingPlanName": {
+            "value": "ASP-groupederessourecesspamguard-8a85"
+        },
+        "serverFarmResourceGroup": {
+            "value": "groupe_de_ressoureces_spamguard"
+        },
+        "alwaysOn": {
+            "value": false
+        },
+        "ftpsState": {
+            "value": "FtpsOnly"
+        },
+        "sku": {
+            "value": "Basic"
+        },
+        "skuCode": {
+            "value": "B1"
+        },
+        "numberOfWorkers": {
+            "value": "1"
+        },
+        "workerSize": {
+            "value": "0"
+        },
+        "workerSizeId": {
+            "value": "0"
+        },
+        "linuxFxVersion": {
+            "value": "PYTHON|3.11"
+        },
+        "postgreSqlServerName": {
+            "value": "spamguard-api-web-app-server"
+        },
+        "postgreSqlDatabaseName": {
+            "value": "spamguard-api-web-app-database"
+        },
+        "postgresqlDatabaseSku": {
+            "value": "Standard_D2s_v3"
+        },
+        "postgresqlDatabaseTier": {
+            "value": "GeneralPurpose"
+        },
+        "postgreSqlServerAdminUsername": {
+            "value": "vskzwaimca"
+        },
+        "postgreSqlServerAdminPwd": {
+            "value": null
+        },
+        "postgreSqlServerTags": {
+            "value": {}
+        },
+        "postgreSqlDatabaseTags": {
+            "value": {}
+        },
+        "outboundSubnetAddressPrefix": {
+            "value": "10.0.2.0/24"
+        },
+        "vnetName": {
+            "value": "spamguard-reseau-virtuel"
+        },
+        "privateDnsZoneName": {
+            "value": "privatelink.postgres.database.azure.com"
+        },
+        "siteConfigName": {
+            "value": "connectionstrings"
+        },
+        "cacheName": {
+            "value": "spamguard-api-web-app-cache"
+        },
+        "cacheSkuName": {
+            "value": "Basic"
+        },
+        "cacheSkuFamily": {
+            "value": "C"
+        },
+        "cacheSkuCapacity": {
+            "value": "0"
+        },
+        "cacheTags": {
+            "value": null
+        },
+        "redisPrivateDnsZoneName": {
+            "value": "privatelink.redis.cache.windows.net"
+        },
+        "redisPrivateEndpointName": {
+            "value": "spamguard-api-web-app-cache-privateEndpoint"
+        }
+    }
+}

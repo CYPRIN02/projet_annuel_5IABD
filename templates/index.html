@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Spam Detection API</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Bienvenue sur le serveur de prédiction de spam!</h1>
+            <p>Utilisez le formulaire ci-dessous pour tester le modèle de détection de spam.</p>
+        </div>
+        <div class="form">
+            <form id="predictForm">
+                <label for="text">Entrez le texte à analyser:</label><br>
+                <textarea id="text" name="text" rows="4" cols="50"></textarea><br><br>
+                <input type="submit" value="Prédire">
+            </form>
+        </div>
+        <div id="result"></div>
+    </div>
+</body>
+</html>

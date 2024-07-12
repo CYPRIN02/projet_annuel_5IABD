@@ -7,6 +7,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OutlookWebAddIn1SpamGuard",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OutlookWebAddIn1SpamGuardWeb", "OutlookWebAddIn1SpamGuardWeb\OutlookWebAddIn1SpamGuardWeb.csproj", "{A1618313-76FF-4020-8AEA-57EC33F6E149}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "server", "server", "{1823BDF2-088F-49DE-A76C-BE3D53EF25FD}"
+	ProjectSection(SolutionItems) = preProject
+		app.py = app.py
+		Procfile = Procfile
+		requirements.txt = requirements.txt
+		spam_classifier.pkl = spam_classifier.pkl
+		tfidf_vectorizer.pkl = tfidf_vectorizer.pkl
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

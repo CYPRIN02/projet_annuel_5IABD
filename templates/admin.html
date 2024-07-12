@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin - Annotate Predictions</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Annotate Predictions</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Text</th>
+                    <th>Prediction</th>
+                    <th>Actual</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in rows %}
+                <tr>
+                    <td>{{ row[0] }}</td>
+                    <td>{{ row[1] }}</td>
+                    <td>{{ row[2] }}</td>
+                    <td>{{ row[3] }}</td>
+                    <td>
+                        <form action="/update_prediction" method="post">
+                            <input type="hidden" name="id" value="{{ row[0] }}">
+                            <select name="actual">
+                                <option value="ham">Ham</option>
+                                <option value="spam">Spam</option>
+                            </select>
+                            <button type="submit">Update</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
