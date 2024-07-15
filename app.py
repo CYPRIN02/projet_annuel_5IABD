@@ -125,6 +125,20 @@ def update_prediction():
     except Exception as e:
         logging.error(f"Erreur: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
+    
+@app.route('/view_predictions', methods=['GET'])
+def view_predictions():
+    try:
+        conn = sqlite3.connect('predictions.db')
+        c = conn.cursor()
+        c.execute("SELECT * FROM predictions")
+        rows = c.fetchall()
+        conn.close()
+        return jsonify(rows)
+    except Exception as e:
+        logging.error(f"Error: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
 
 # Fonction de réentraînement du modèle
 def retrain_model():
