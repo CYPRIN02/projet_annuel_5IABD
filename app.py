@@ -130,7 +130,10 @@ def update_prediction():
 def retrain_model():
     conn = sqlite3.connect('predictions.db')
     c = conn.cursor()
-    c.execute("SELECT text, actual FROM predictions WHERE actual IS NOT NULL")
+    query = """
+    SELECT text, COALESCE(actual, prediction) as label FROM predictions
+    """
+    c.execute(query)
     rows = c.fetchall()
     conn.close()
     texts = [clean_text(row[0]) for row in rows if row[0] and row[1]]

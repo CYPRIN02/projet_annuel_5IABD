@@ -26,7 +26,7 @@
                     <td>{{ row[2] }}</td>
                     <td>{{ row[3] }}</td>
                     <td>
-                        <form action="/update_prediction" method="post">
+                        <form action="/update_prediction" method="post" target="_blank">
                             <input type="hidden" name="id" value="{{ row[0] }}">
                             <select name="actual">
                                 <option value="ham">Ham</option>

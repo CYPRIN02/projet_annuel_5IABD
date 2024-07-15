@@ -8,17 +8,69 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Bienvenue sur le serveur de prédiction de spam!</h1>
-            <p>Utilisez le formulaire ci-dessous pour tester le modèle de détection de spam.</p>
+            <h1 data-en="Welcome to the Spam Prediction Server!" data-fr="Bienvenue sur le serveur de prédiction de spam!">Welcome to the Spam Prediction Server!</h1>
+            <p data-en="Use the form below to test the spam detection model." data-fr="Utilisez le formulaire ci-dessous pour tester le modèle de détection de spam.">Use the form below to test the spam detection model.</p>
+            <button id="translateButton" data-en="Translate to French" data-fr="Traduire en anglais">Translate to French</button>
+        </div>
+        <div class="definitions">
+            <div class="definition">
+                <h2 data-en="What is SPAM?" data-fr="Qu'est-ce que le SPAM?">What is SPAM?</h2>
+                <p data-en="Spam is unsolicited messages, often of a commercial nature, sent in bulk." data-fr="Le spam est un message non sollicité, souvent de nature publicitaire, envoyé en grande quantité.">Spam is unsolicited messages, often of a commercial nature, sent in bulk.</p>
+            </div>
+            <div class="definition">
+                <h2 data-en="What is HAM?" data-fr="Qu'est-ce que le HAM?">What is HAM?</h2>
+                <p data-en="Ham is a legitimate and relevant message that is not classified as spam." data-fr="Le ham est un message légitime et pertinent, qui n'est pas classé comme spam.">Ham is a legitimate and relevant message that is not classified as spam.</p>
+            </div>
         </div>
         <div class="form">
             <form id="predictForm">
-                <label for="text">Entrez l'objet d'email et/ou le contenu de l'email ci-dessous :</label><br>
+                <label for="text" data-en="Enter the email subject and/or content below:" data-fr="Entrez l'objet d'email et/ou le contenu de l'email ci-dessous :">Enter the email subject and/or content below:</label><br>
                 <textarea id="text" name="text" rows="4" cols="50"></textarea><br><br>
-                <input type="submit" value="Prédire">
+                
+                <input type="checkbox" id="dataConsent" name="dataConsent">
+                <label for="dataConsent" data-en="I accept the storage of my personal data" data-fr="J'accepte le stockage de mes données personnelles">I accept the storage of my personal data</label><br><br>
+
+                <input type="submit" value="Predict" data-en="Predict" data-fr="Prédire">
             </form>
         </div>
         <div id="result"></div>
     </div>
+
+    <script>
+        document.getElementById('translateButton').addEventListener('click', function() {
+            const elements = document.querySelectorAll('[data-en]');
+
+            elements.forEach(function(element) {
+                const enText = element.getAttribute('data-en');
+                const frText = element.getAttribute('data-fr');
+                
+                if (element.innerText === enText) {
+                    element.innerText = frText;
+                } else {
+                    element.innerText = enText;
+                }
+            });
+
+            const button = document.getElementById('translateButton');
+            if (button.innerText === 'Translate to French') {
+                button.innerText = 'Traduire en anglais';
+            } else {
+                button.innerText = 'Translate to French';
+            }
+        });
+
+        document.getElementById('predictForm').addEventListener('submit', function(event) {
+            const consentCheckbox = document.getElementById('dataConsent');
+            const textInput = document.getElementById('text');
+            
+            if (!consentCheckbox.checked) {
+                alert('You must accept the storage of your personal data before proceeding.');
+                event.preventDefault();
+            } else if (textInput.value.length < 5) {
+                alert('The email subject and/or content must be at least 5 characters long.');
+                event.preventDefault();
+            }
+        });
+    </script>
 </body>
 </html>

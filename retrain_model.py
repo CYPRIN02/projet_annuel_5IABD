@@ -39,7 +39,7 @@ def retrain_model():
     pipeline.fit(X_train, y_train)
     
     # Sauvegarder le pipeline entier (modèle + vectoriseur)
-    with open('spam_classifier_pipeline.pkl', 'wb') as f:
+    with open('spam_classifier_pipeline_retrain.pkl', 'wb') as f:
         pickle.dump(pipeline, f)
 
     # Afficher les performances du modèle
